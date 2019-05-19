@@ -1,6 +1,7 @@
 const Block = require("./block");
 const { GENESIS_DATA } = require("./config");
 
+// test case for the Block class
 describe("Block", () => {
   const timestamp = "a-date";
   const lastHash = "foo-hash";
@@ -15,6 +16,7 @@ describe("Block", () => {
     expect(block.data).toEqual(data);
   });
 
+  //   test for genesis block
   describe("genesis()", () => {
     const genesisBlock = Block.genesis();
 
@@ -23,6 +25,26 @@ describe("Block", () => {
     });
     it("returns the genesis data", () => {
       expect(genesisBlock).toEqual(GENESIS_DATA);
+    });
+  });
+
+  //   test for mining blocks
+  describe("mineBlock", () => {
+    const lastBlock = Block.genesis();
+    const data = "mined data";
+    const minedBlock = Block.mineBlock({ lastBlock, data });
+
+    it("return a block instance", () => {
+      expect(minedBlock instanceof Block).toBe(true);
+    });
+    it("sets the `lastHash` to be the `hash` of the lastBlock", () => {
+      expect(minedBlock.lastHash).toEqual(lastBlock.hash);
+    });
+    it("sets the data", () => {
+      expect(minedBlock.data).toEqual(data);
+    });
+    it("sets a timestamp", () => {
+      expect(minedBlock.timestamp).not.toEqual(undefined);
     });
   });
 });
