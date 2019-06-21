@@ -1,5 +1,5 @@
 const Block = require("./block");
-const cryptoHash = require("../util/crypto-hash");
+const { cryptoHash } = require("../util");
 
 class Blockchain {
   constructor() {
@@ -41,6 +41,7 @@ class Blockchain {
     return true;
   }
 
+  // sets the blockchain to the longest chain in the network
   replaceChain(chain) {
     if (chain.length <= this.chain.length) {
       console.error("The incoming chain must be longer");

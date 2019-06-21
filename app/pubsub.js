@@ -13,6 +13,7 @@ class PubSub {
 
     this.subscribeToChannels();
 
+    // handleMessage() fired when message is broadcast on channel
     this.subscriber.on("message", (channel, message) =>
       this.handleMessage(channel, message)
     );

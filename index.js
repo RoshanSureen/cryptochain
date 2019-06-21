@@ -5,14 +5,21 @@ const Blockchain = require("./blockchain");
 const PubSub = require("./app/pubsub");
 
 const app = express();
+
+// create new instance of blockchain
 const blockchain = new Blockchain();
+
+// join the network as both publisher and subscriber
 const pubsub = new PubSub({ blockchain });
 
+// Define ROOT_NODE address and port
 const DEFAULT_PORT = 3000;
 const ROOT_NODE_ADDRESS = `http://localhost:${DEFAULT_PORT}`;
 
+// Middleware
 app.use(bodyParser.json());
 
+// API
 app.get("/api/blocks", (req, res) => {
   res.json(blockchain.chain);
 });
@@ -25,6 +32,7 @@ app.post("/api/mine", (req, res) => {
   res.redirect("/api/blocks");
 });
 
+// new nodes get latest copy of the longest blockchain in the network
 const syncChains = () => {
   request(
     { url: `${ROOT_NODE_ADDRESS}/api/blocks` },
@@ -38,13 +46,14 @@ const syncChains = () => {
     }
   );
 };
-let PEER_PORT;
 
+// generate different port number for different nodes in the network
+let PEER_PORT;
 if (process.env.GENERATE_PEER_PORT === "true") {
   PEER_PORT = DEFAULT_PORT + Math.ceil(Math.random() * 1000);
 }
-
 const PORT = PEER_PORT || DEFAULT_PORT;
+
 app.listen(PORT, () => {
   console.log(`server listening on port ${PORT}`);
 
