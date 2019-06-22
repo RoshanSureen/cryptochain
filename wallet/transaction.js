@@ -19,12 +19,13 @@ class Transaction {
   createInput({ senderWallet, outputMap }) {
     return {
       timestamp: Date.now(),
-      amount: senderWallet.balance,
+      amount: senderWallet.balance, // initial amount before transaction
       address: senderWallet.publicKey,
       signature: senderWallet.sign(outputMap)
     };
   }
 
+  // update amount to recipient or add a new recipient in transaction
   update({ senderWallet, recipient, amount }) {
     if (amount > this.outputMap[senderWallet.publicKey]) {
       throw new Error("Amount excceds balance");
