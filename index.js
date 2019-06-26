@@ -1,10 +1,11 @@
 const express = require("express");
-const request = require("request");
 const bodyParser = require("body-parser");
+const request = require("request");
 const Blockchain = require("./blockchain");
 const PubSub = require("./app/pubsub");
 const TransactionPool = require("./wallet/transaction-pool");
 const Wallet = require("./wallet");
+const TransactionMiner = require("./app/transaction-miner");
 
 const app = express();
 
@@ -12,17 +13,19 @@ const blockchain = new Blockchain();
 const transactionPool = new TransactionPool();
 const wallet = new Wallet();
 const pubsub = new PubSub({ blockchain, transactionPool });
+const transactionMiner = new TransactionMiner({
+  blockchain,
+  transactionPool,
+  wallet,
+  pubsub
+});
 
-// Define ROOT_NODE address and port
 const DEFAULT_PORT = 3000;
 const ROOT_NODE_ADDRESS = `http://localhost:${DEFAULT_PORT}`;
 
-// Middleware
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
-// ===================================================================================
-// API requests
-// ===================================================================================
 app.get("/api/blocks", (req, res) => {
   res.json(blockchain.chain);
 });
@@ -56,24 +59,21 @@ app.post("/api/transact", (req, res) => {
 
   transactionPool.setTransaction(transaction);
 
-  res.json({
-    confirmation: "success",
-    transaction
-  });
+  res.json(transaction);
 
   pubsub.broadcastTransaction(transaction);
 });
 
 app.get("/api/transaction-pool-map", (req, res) => {
-  res.json({
-    confirmation: "success",
-    message: transactionPool.transactionMap
-  });
+  res.json(transactionPool.transactionMap);
 });
 
-// ===================================================================================
-// new nodes get latest copy of the longest blockchain in the network
-// ===================================================================================
+app.get("/api/mine-transactions", (req, res) => {
+  transactionMiner.mineTransactions();
+
+  res.redirect("/api/blocks");
+});
+
 const syncWithRootState = () => {
   request(
     { url: `${ROOT_NODE_ADDRESS}/api/blocks` },
@@ -94,7 +94,7 @@ const syncWithRootState = () => {
         const rootTransactionPoolMap = JSON.parse(body);
 
         console.log(
-          "replcae transaction pool map on a sync with",
+          "replace transaction pool map on a sync with",
           rootTransactionPoolMap
         );
         transactionPool.setMap(rootTransactionPoolMap);
