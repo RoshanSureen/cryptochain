@@ -26,6 +26,9 @@ const ROOT_NODE_ADDRESS = `http://localhost:${DEFAULT_PORT}`;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
+// =================================================================================
+// API Routes
+// =================================================================================
 app.get("/api/blocks", (req, res) => {
   res.json(blockchain.chain);
 });
@@ -89,6 +92,9 @@ app.get("/api/wallet-info", (req, res) => {
   });
 });
 
+// =================================================================================
+// Sync blockchain and transactionPool in new node
+// =================================================================================
 const syncWithRootState = () => {
   request(
     { url: `${ROOT_NODE_ADDRESS}/api/blocks` },
@@ -117,6 +123,7 @@ const syncWithRootState = () => {
     }
   );
 };
+// =================================================================================
 
 // generate different port number for different nodes in the network
 let PEER_PORT;
