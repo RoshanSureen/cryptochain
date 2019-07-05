@@ -26,7 +26,7 @@ const ROOT_NODE_ADDRESS = `http://localhost:${DEFAULT_PORT}`;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, "client")));
+app.use(express.static(path.join(__dirname, "client/dist")));
 
 // =================================================================================
 // API Routes
@@ -94,8 +94,9 @@ app.get("/api/wallet-info", (req, res) => {
   });
 });
 
+// serve index.html for all type of requests
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "client/index.html"));
+  res.sendFile(path.join(__dirname, "client/dist/index.html"));
 });
 
 // =================================================================================
