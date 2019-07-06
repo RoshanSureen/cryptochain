@@ -1,7 +1,5 @@
 import React from "react";
-import { render } from "react-dom";
+import ReactDOM from "react-dom";
+import App from "./components/App";
 
-render(
-  <div>Cryptochain in react:: fifth Live update</div>,
-  document.getElementById("root")
-);
+ReactDOM.render(<App />, document.getElementById("root"));
