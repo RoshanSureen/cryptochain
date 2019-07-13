@@ -103,6 +103,38 @@ app.get("*", (req, res) => {
 });
 
 // =================================================================================
+// Sync blockchain and transactionPool in new node
+// =================================================================================
+const syncWithRootState = () => {
+  request(
+    { url: `${ROOT_NODE_ADDRESS}/api/blocks` },
+    (error, response, body) => {
+      if (!error && response.statusCode === 200) {
+        const rootChain = JSON.parse(body);
+
+        console.log("replace chain on a sync with", rootChain);
+        blockchain.replaceChain(rootChain);
+      }
+    }
+  );
+
+  request(
+    { url: `${ROOT_NODE_ADDRESS}/api/transaction-pool-map` },
+    (error, response, body) => {
+      if (!error && response.statusCode === 200) {
+        const rootTransactionPoolMap = JSON.parse(body);
+
+        console.log(
+          "replace transaction pool map on a sync with",
+          rootTransactionPoolMap
+        );
+        transactionPool.setMap(rootTransactionPoolMap);
+      }
+    }
+  );
+};
+
+// =================================================================================
 // make some transactions for testing
 // =================================================================================
 const walletFoo = new Wallet();
@@ -154,37 +186,6 @@ for (let i = 0; i < 20; i++) {
   transactionMiner.mineTransactions();
 }
 
-// =================================================================================
-// Sync blockchain and transactionPool in new node
-// =================================================================================
-const syncWithRootState = () => {
-  request(
-    { url: `${ROOT_NODE_ADDRESS}/api/blocks` },
-    (error, response, body) => {
-      if (!error && response.statusCode === 200) {
-        const rootChain = JSON.parse(body);
-
-        console.log("replace chain on a sync with", rootChain);
-        blockchain.replaceChain(rootChain);
-      }
-    }
-  );
-
-  request(
-    { url: `${ROOT_NODE_ADDRESS}/api/transaction-pool-map` },
-    (error, response, body) => {
-      if (!error && response.statusCode === 200) {
-        const rootTransactionPoolMap = JSON.parse(body);
-
-        console.log(
-          "replace transaction pool map on a sync with",
-          rootTransactionPoolMap
-        );
-        transactionPool.setMap(rootTransactionPoolMap);
-      }
-    }
-  );
-};
 // =================================================================================
 
 // generate different port number for different nodes in the network
