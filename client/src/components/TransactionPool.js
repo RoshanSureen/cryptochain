@@ -57,7 +57,7 @@ export default class TransactionPool extends Component {
           );
         })}
         <hr />
-        <Button variant="danger" onClick={this.mineTransactions()}>
+        <Button variant="danger" onClick={this.mineTransactions}>
           Mine the transactions
         </Button>
       </div>

@@ -46831,7 +46831,7 @@ function (_Component) {
         }));
       }), _react.default.createElement("hr", null), _react.default.createElement(_reactBootstrap.Button, {
         variant: "danger",
-        onClick: this.mineTransactions()
+        onClick: this.mineTransactions
       }, "Mine the transactions"));
     }
   }]);
@@ -46979,7 +46979,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56291" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60698" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
